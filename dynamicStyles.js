@@ -27,6 +27,10 @@ function getCSSProperty(property) {
     "border-": "border-width",
     "rounded-": "border-radius",
     "opacity-": "opacity",
+    "top-": "top",
+    "bottom-": "bottom",
+    "left-": "left",
+    "right-": "right",
   };
   return propertyMap[property] || null;
 }
