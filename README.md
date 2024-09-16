@@ -17,7 +17,7 @@ Example usage:
 output:
 
 ```css
-<!-- The output is minified. not exactly in this format -->
+/* The output is minified. not exactly in this format */
 <style>
   .w-\[100px\] {
     width: 100px;
