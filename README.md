@@ -16,7 +16,7 @@ Example usage:
 
 output:
 
-```html
+```css
 <!-- The output is minified. not exactly in this format -->
 <style>
   .w-\[100px\] {
