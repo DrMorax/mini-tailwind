@@ -10,7 +10,6 @@ function escapeClassName(className) {
     .replace(/#/g, "\\#"); // Escape hash symbol
 }
 
-// Mapping out each className to the corresponding CSS property(can be customized too).
 function getCSSProperty(property) {
   const propertyMap = {
     "h-": "height",
@@ -43,43 +42,52 @@ function getCSSProperty(property) {
   return propertyMap[property] || null;
 }
 
-// Generate the styles on the client side.
+const breakpoints = {
+  sm: "(min-width: 640px)",
+  md: "(min-width: 768px)",
+  lg: "(min-width: 1024px)",
+  xl: "(min-width: 1280px)",
+};
+
 function generateDynamicStyles() {
   const dynamicStyles = [];
   const elements = document.querySelectorAll('*[class*="["]');
 
   elements.forEach((el) => {
-    // Convert the class list of the current element to an array.
     const classList = [...el.classList];
 
-    // Iterate over each class name in the class list.
     classList.forEach((cls) => {
-      // Check if the class name contains square brackets.
-      if (cls.includes("[") && cls.includes("]")) {
-        // Split the class name by the square brackets to separate property and value.
-        const [property, value] = cls.split(/\[(.*)\]/).filter(Boolean);
+      const hasBreakpoint = cls.includes(":");
+      let breakpoint = null;
 
-        // Retrieve the corresponding CSS property for the class prefix.
+      if (hasBreakpoint) {
+        [breakpoint, cls] = cls.split(":");
+      }
+
+      if (cls.includes("[") && cls.includes("]")) {
+        const [property, value] = cls.split(/\[(.*)\]/).filter(Boolean);
         const cssProperty = getCSSProperty(property);
 
-        // If a valid CSS property is found.
         if (cssProperty) {
-          // Escape special characters in the class name for CSS usage.
           const escapedClass = escapeClassName(cls);
-
-          // Split the CSS property into multiple properties if necessary (e.g., padding).
           const properties = cssProperty.split(", ");
 
-          // Create a CSS rule for each property and add it to the dynamicStyles array.
           properties.forEach((prop) => {
-            dynamicStyles.push(`.${escapedClass} { ${prop}: ${value}; }`);
+            const rule = `.${escapedClass} { ${prop}: ${value}; }`;
+
+            if (hasBreakpoint && breakpoints[breakpoint]) {
+              dynamicStyles.push(
+                `@media ${breakpoints[breakpoint]} { .${breakpoint}\\:${escapedClass} { ${prop}: ${value}; } }`
+              );
+            } else {
+              dynamicStyles.push(rule);
+            }
           });
         }
       }
     });
   });
 
-  // Create a styles tag to hold the generated styles
   const styleElement = document.createElement("style");
   styleElement.innerHTML = dynamicStyles.join(" ");
 
