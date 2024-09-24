@@ -18,7 +18,8 @@ output:
 
 ```css
 /* The output is minified. not exactly in this format */
-<style > .w-\[100px\] {
+<style>
+.w-\[100px\] {
   width: 100px;
 }
 
